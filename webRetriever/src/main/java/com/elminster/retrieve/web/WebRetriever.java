@@ -58,7 +58,7 @@ abstract public class WebRetriever implements IRetriever<Response> {
       configHttpClient(client);
       HttpMethod httpMethod = HttpMethodFactory.INSTANCE.getHttpMethod(method);
       httpMethod.setURI(new URI(url, false));
-      configHttpMethod(httpMethod);
+      configHttpMethod(client, httpMethod);
       if (logger.isInfoEnabled()) {
         logger.info("Starting calling url [" + url + "].");
       }
@@ -90,9 +90,10 @@ abstract public class WebRetriever implements IRetriever<Response> {
   
   /**
    * Config the Http method.
+   * @param client the Http client
    * @param httpMethod the Http method
    */
-  abstract protected void configHttpMethod(HttpMethod httpMethod) throws RetrieveException;
+  abstract protected void configHttpMethod(HttpClient client, HttpMethod httpMethod) throws RetrieveException;
 
   /**
    * Config the Http client.
