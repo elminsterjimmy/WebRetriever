@@ -72,6 +72,7 @@ abstract public class WebRetriever implements IRetriever<Response> {
       client.executeMethod(httpMethod);
       int status = httpMethod.getStatusCode();
       if (200 != status) {
+        dumpResponse(httpMethod);
         throw new WebRetrieveException(url, "Status fails. Status = " + status);
       } else {
         if (logger.isInfoEnabled()) {
@@ -88,6 +89,28 @@ abstract public class WebRetriever implements IRetriever<Response> {
     }
   }
   
+  private void dumpResponse(HttpMethod httpMethod) throws IOException {
+    if (logger.isDebugEnabled()) {
+      logger.debug("dump response()");
+      logger.debug("dump response headers");
+      Header[] responseHeaders = httpMethod.getResponseHeaders();
+      if (null != responseHeaders) {
+        for (Header header : responseHeaders) {
+          logger.debug(header.getName() + ":" + header.getValue());
+        }
+      }
+      logger.debug("dump response body");
+      logger.debug(httpMethod.getResponseBodyAsString());
+      logger.debug("dump response footers");
+      Header[] responseFooterss = httpMethod.getResponseFooters();
+      if (null != responseFooterss) {
+        for (Header footer : responseFooterss) {
+          logger.debug(footer.getName() + ":" + footer.getValue());
+        }
+      }
+    }
+  }
+
   /**
    * Config the Http method.
    * @param client the Http client
