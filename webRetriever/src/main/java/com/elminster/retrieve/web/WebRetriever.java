@@ -78,11 +78,7 @@ abstract public class WebRetriever implements IRetriever<Response> {
         if (logger.isInfoEnabled()) {
           logger.info("Ending calling url [" + url + "].");
         }
-        Response response = new Response();
-        response.setHeaders(httpMethod.getResponseHeaders());
-        response.setBody(httpMethod.getResponseBodyAsString());
-        response.setFooters(httpMethod.getResponseFooters());
-        return response;
+        return new Response(httpMethod);
       }
     } catch (IOException e) {
       throw new WebRetrieveException(url, e);

@@ -1,6 +1,12 @@
 package com.elminster.retrieve.web.data;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpMethod;
+
+import com.elminster.common.retrieve.RetrieveException;
 
 /**
  * The HTTP response.
@@ -9,45 +15,56 @@ import org.apache.commons.httpclient.Header;
  * @version 1.0
  */
 public class Response {
-
-  private Header[] headers;
-  private String body;
-  private Header[] footers;
+  
+  private HttpMethod httpMethod;
+  
+  public Response(HttpMethod httpMethod) {
+    this.httpMethod = httpMethod;
+  }
   
   /**
    * @return the headers
    */
   public Header[] getHeaders() {
-    return headers;
-  }
-  /**
-   * @param headers the headers to set
-   */
-  public void setHeaders(Header[] headers) {
-    this.headers = headers;
+    return httpMethod.getResponseHeaders();
   }
   /**
    * @return the body
+   * @throws IOException 
    */
-  public String getBody() {
-    return body;
+  public String getBody() throws RetrieveException {
+    try {
+      return httpMethod.getResponseBodyAsString();
+    } catch (IOException e) {
+      throw new RetrieveException(e);
+    }
   }
   /**
-   * @param body the body to set
+   * @return the body as inputstream
+   * @throws IOException 
    */
-  public void setBody(String body) {
-    this.body = body;
+  public InputStream getBodyAsInputStream() throws RetrieveException {
+    try {
+      return httpMethod.getResponseBodyAsStream();
+    } catch (IOException e) {
+      throw new RetrieveException(e);
+    }
+  }
+  /**
+   * @return the body as byte array
+   * @throws IOException 
+   */
+  public byte[] getBodyAsByteArray() throws RetrieveException {
+    try {
+      return httpMethod.getResponseBody();
+    } catch (IOException e) {
+      throw new RetrieveException(e);
+    }
   }
   /**
    * @return the footers
    */
   public Header[] getFooters() {
-    return footers;
-  }
-  /**
-   * @param footers the footers to set
-   */
-  public void setFooters(Header[] footers) {
-    this.footers = footers;
+    return httpMethod.getResponseFooters();
   }
 }
