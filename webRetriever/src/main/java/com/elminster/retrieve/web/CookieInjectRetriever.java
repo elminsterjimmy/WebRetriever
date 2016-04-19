@@ -31,8 +31,6 @@ abstract public class CookieInjectRetriever extends WebRetriever {
   public CookieInjectRetriever(String url, Method method) {
     super(url, method);
   }
-  
-  
 
   /**
    * @see com.elminster.retrieve.web.WebRetriever#configHttpClient(org.apache.commons.httpclient.HttpClient)
@@ -96,5 +94,4 @@ abstract public class CookieInjectRetriever extends WebRetriever {
     cookie.setExpiryDate(new Date(System.currentTimeMillis() + expires));
     return cookie;
   }
-
 }
