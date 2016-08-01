@@ -32,4 +32,8 @@ public class HttpMethodFactory {
     }
     return httpMethod;
   }
+  
+  public void setGlobalProxy() {
+    
+  }
 }

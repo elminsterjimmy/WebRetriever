@@ -2,15 +2,20 @@ package com.elminster.retrieve.web;
 
 import java.io.IOException;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.URI;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.elminster.common.retrieve.IRetriever;
 import com.elminster.common.retrieve.RetrieveException;
+import com.elminster.retrieve.web.conf.Configuration;
 import com.elminster.retrieve.web.data.HttpMethodFactory;
 import com.elminster.retrieve.web.data.Method;
 import com.elminster.retrieve.web.data.Response;
@@ -33,6 +38,12 @@ abstract public class WebRetriever implements IRetriever<Response> {
   /** the HTTP method used in the retriever. */
   protected final Method method;
 
+  private ProxyHost globalProxyHost;
+
+  private AuthScope globalProxyAuthScope;
+
+  private Credentials globalPorxyCredentials;
+
   /**
    * Constructor.
    * 
@@ -46,8 +57,20 @@ abstract public class WebRetriever implements IRetriever<Response> {
   public WebRetriever(String url, Method method) {
     this.url = url;
     this.method = method;
+    if (Configuration.INSTANCE.getBooleanProperty(Configuration.PROXY_ENABLE, false)) {
+      String host = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_HOST);
+      int port = Configuration.INSTANCE.getIntegerProperty(Configuration.PROXY_PORT);
+      this.globalProxyHost = new ProxyHost(host, port);
+      if (Configuration.INSTANCE.getBooleanProperty(Configuration.PROXY_CREDENTIALS_REQUIRED, false)) {
+//        String scope = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_CREDENTIALS_AUTH_SCOPE);
+        String username = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_CREDENTIALS_USERNAME);
+        String password = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_CREDENTIALS_PASSWORD);
+        globalProxyAuthScope = AuthScope.ANY;
+        globalPorxyCredentials = new UsernamePasswordCredentials(username, password);
+      }
+    }
   }
-
+  
   /**
    * {@inheritDoc}
    */
@@ -85,6 +108,17 @@ abstract public class WebRetriever implements IRetriever<Response> {
     }
   }
   
+  public void setProxyWithCredentials(final ProxyHost proxyHost, final AuthScope authscope, 
+      final Credentials credentials) {
+    this.globalProxyHost = proxyHost;
+    this.globalProxyAuthScope = authscope;
+    this.globalPorxyCredentials = credentials;
+  }
+  
+  public void setProxy(final ProxyHost proxyHost) {
+    this.globalProxyHost = proxyHost;
+  }
+  
   private void dumpResponse(HttpMethod httpMethod) throws IOException {
     if (logger.isDebugEnabled()) {
       logger.debug("dump response()");
@@ -106,7 +140,7 @@ abstract public class WebRetriever implements IRetriever<Response> {
       }
     }
   }
-
+  
   /**
    * Config the Http method.
    * @param client the Http client
@@ -118,5 +152,12 @@ abstract public class WebRetriever implements IRetriever<Response> {
    * Config the Http client.
    * @param client the Http client
    */
-  abstract protected void configHttpClient(HttpClient client) throws RetrieveException;
+  protected void configHttpClient(HttpClient client) throws RetrieveException {
+    if (null != globalProxyHost) {
+      client.getHostConfiguration().setProxyHost(globalProxyHost);
+      if (null != globalProxyAuthScope) {
+        client.getState().setProxyCredentials(globalProxyAuthScope, globalPorxyCredentials);
+      }
+    }
+  }
 }

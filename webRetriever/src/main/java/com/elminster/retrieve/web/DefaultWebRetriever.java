@@ -22,8 +22,4 @@ public class DefaultWebRetriever extends WebRetriever {
   protected void configHttpMethod(HttpClient client, HttpMethod httpMethod) throws RetrieveException {
   }
 
-  @Override
-  protected void configHttpClient(HttpClient client) throws RetrieveException {
-  }
-
 }

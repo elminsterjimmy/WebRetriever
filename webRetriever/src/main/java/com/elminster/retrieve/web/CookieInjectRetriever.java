@@ -37,6 +37,7 @@ abstract public class CookieInjectRetriever extends WebRetriever {
    */
   @Override
   protected void configHttpClient(HttpClient client) throws RetrieveException {
+    super.configHttpClient(client);
     Cookie[] cookies;
     try {
       cookies = readCookies();
