@@ -16,10 +16,10 @@ public class Configuration extends CommonConfiguration {
   private static final Log logger = LogFactory.getLog(Configuration.class);
   private static final String CONFIG_NAME = "web-retrieve.properties";
   
-  public static final String PROXY_ENABLE = "httpclient.proxy.enable";
+  public static final BooleanKey PROXY_ENABLE = new BooleanKey("httpclient.proxy.enable", false);
   public static final String PROXY_HOST = "httpclient.proxy.host";
   public static final String PROXY_PORT = "httpclient.proxy.port";
-  public static final String PROXY_CREDENTIALS_REQUIRED = "httpclient.proxy.credentials.required";
+  public static final BooleanKey PROXY_CREDENTIALS_REQUIRED = new BooleanKey("httpclient.proxy.credentials.required", false);
   public static final String PROXY_CREDENTIALS_AUTH_SCOPE = "httpclient.proxy.credentials.auth.scope";
   public static final String PROXY_CREDENTIALS_USERNAME = "httpclient.proxy.credentials.username";
   public static final String PROXY_CREDENTIALS_PASSWORD = "httpclient.proxy.credentials.password";

@@ -57,11 +57,11 @@ abstract public class WebRetriever implements IRetriever<Response> {
   public WebRetriever(String url, Method method) {
     this.url = url;
     this.method = method;
-    if (Configuration.INSTANCE.getBooleanProperty(Configuration.PROXY_ENABLE, false)) {
+    if (Configuration.INSTANCE.getBooleanProperty(Configuration.PROXY_ENABLE)) {
       String host = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_HOST);
       int port = Configuration.INSTANCE.getIntegerProperty(Configuration.PROXY_PORT);
       this.globalProxyHost = new ProxyHost(host, port);
-      if (Configuration.INSTANCE.getBooleanProperty(Configuration.PROXY_CREDENTIALS_REQUIRED, false)) {
+      if (Configuration.INSTANCE.getBooleanProperty(Configuration.PROXY_CREDENTIALS_REQUIRED)) {
 //        String scope = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_CREDENTIALS_AUTH_SCOPE);
         String username = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_CREDENTIALS_USERNAME);
         String password = Configuration.INSTANCE.getStringProperty(Configuration.PROXY_CREDENTIALS_PASSWORD);
